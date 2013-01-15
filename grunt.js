@@ -81,38 +81,27 @@ module.exports = function(grunt) {
                 }
             }
         },
-		jshint: {
-			options: {
-				curly: true,
-				eqeqeq: true,
-				immed: true,
-				latedef: true,
-				newcap: true,
-				noarg: true,
-				sub: true,
-				undef: true,
-				boss: true,
-				eqnull: true,
-				browser: true
-			},
-			globals: {
-				'define': true,
-				'require': true,
-				'requirejs': true,
-				/* For tests only! */
-				'describe': true,
-				'it': true,
-				'beforeEach': true
-			}
-		}
+        complexity : {
+            generic: {
+                src: noVendorFiles([/*'grunt.js',*/ 'src/js/**/*.js']),
+                options: {
+                    cyclomatic: 3,
+                    halstead: 8,
+                    maintainability: 90
+               }
+            }
+        },
+		jshint: "<json:jshint.json>"
 	});
 
 	// R.js support
 	grunt.loadNpmTasks('grunt-requirejs');
 	// Mocha + PhantomJS runner
 	grunt.loadNpmTasks('grunt-mocha');
-	// Minifiy and concat css & js
+	// Change <script> and <link> tags in index.html
 	grunt.loadNpmTasks('grunt-useref');
+    // JS code complexity
+	grunt.loadNpmTasks('grunt-complexity');
 
 	// Default tasks
 	grunt.registerTask('quality', 'lint csslint mocha');
@@ -120,5 +109,6 @@ module.exports = function(grunt) {
 
 	// Build
 	grunt.registerTask('build', 'quality build_nolint');
+    grunt.registerTask('default', 'build');
 
 };
