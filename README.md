@@ -1,9 +1,9 @@
-=blacksoft.template=
+#blacksoft.template#
 ==================
 
-==Template for web applications==
+##Template for web applications##
 
-===Includes===
+###Includes###
 * Twitter Bootstrap,
 * Font Awesome,
 * Underscore.js,
@@ -11,12 +11,12 @@
 * Require.js,
 * Modernizr.
 
-===Unit testing===
+###Unit testing###
 There is also unit testing framework:
 * Mocha
 * with Chai assertions library
 
-===Application linting and building===
+###Application linting and building###
 Build process is maintained by grunt and includes:
 * Quality tasks
   * JSHint linter
@@ -27,7 +27,7 @@ Build process is maintained by grunt and includes:
   * JS minimization and concatenation (require.js config, library and main module)
   * CSS minimization and concatenation
 
-====Required npm modules====
+####Required npm modules####
 * grunt-requirejs
 * grunt-mocha
 * grunt-useref
