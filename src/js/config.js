@@ -15,15 +15,12 @@ var require = {
 			exports : '_'
 		},
 		'backbone' : {
-			deps : ['underscore', 'jquery'],
+			deps : ['underscore'],
 			exports : 'Backbone'
 		},
 		'backbone.storage' : {
 			deps : ['backbone'],
 			exports : 'Backbone'
-		},
-		'bootstrap' : {
-			deps : ['jquery']
 		}
 	}
 };

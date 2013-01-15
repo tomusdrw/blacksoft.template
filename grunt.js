@@ -1,95 +1,116 @@
 /*global module:false*/
 module.exports = function(grunt) {
-  // Project configuration.
-  grunt.initConfig({
-    meta: {
-      version: '0.1.0',
-      banner: '/*! PROJECT_NAME - v<%= meta.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '* http://PROJECT_WEBSITE/\n' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
-        'YOUR_NAME; Licensed MIT */'
-    },
-    lint: {
-        files: grunt.file.expandFiles(['grunt.js', 'src/**/*.js', 'tests/**/*.js']).
-          filter(function(x) {
-            return x.indexOf('/vendor/') === -1;
-          })
-    },
-    qunit: {
-      files: ['tests/**/*.html']
-    },
-    watch: {
-      files: '<config:lint.files>',
-      tasks: 'lint qunit'
-    },
-	requirejs : {
-        compile : {
-            appDir: "src",
-            baseUrl: "js",
-            dir: "dist",
-            modules : [
-              {
-                name: "main"
-              }
-            ],
-            paths : {
-                'bootstrap' : 'vendor/bootstrap-2.2.2',
-                'underscore' : 'vendor/underscore-1.4.3',
-                'backbone' : 'vendor/backbone-0.9.9',
-                'backbone.storage' : 'vendor/backbone.webStorage'
-            },
-            map : {
-                '*' : {
-                    '_' : 'underscore'
-                }
-            },
-            shim : {
-                'underscore' : {
-                    exports : '_'
-                },
-                'backbone' : {
-                    deps : ['underscore'],
-                    exports : 'Backbone'
-                },
-                'backbone.storage' : {
-                    deps : ['backbone'],
-                    exports : 'Backbone'
-                },
-            }
-        }
-	},
-    jshint: {
-        options: {
-            curly: true,
-            eqeqeq: true,
-            immed: true,
-            latedef: true,
-            newcap: true,
-            noarg: true,
-            sub: true,
-            undef: true,
-            boss: true,
-            eqnull: true,
-            browser: true
+    var noVendorFiles = function(files) {
+        return grunt.file.expandFiles(files).filter(function(x) {
+			return x.indexOf('/vendor/') === - 1;
+	    });
+    };
+
+	// Project configuration.
+	grunt.initConfig({
+        project : "<json:project.json>",
+		meta: {
+			banner: '/*! <%=project.name %> - v<%= project.version %> - ' //
+                  + '<%= grunt.template.today("yyyy-mm-dd") %>\n' //
+                  + '* <%= project.website %>\n' //
+                  + '* Copyright (c) <%= grunt.template.today("yyyy") %> ' //
+                  + '<%= project.author %>; Licensed <%= project.license %> */'
+		},
+		lint: {
+			files: noVendorFiles(['grunt.js', 'src/**/*.js', 'tests/**/*.js'])		
         },
-        globals : {
-            'define': true,
-            'require': true, 
-            'requirejs': true,
-            /* For tests only! */
-            'describe': true,
-            'it': true,
-            'beforeEach': true
-        }
-    },
-    uglify: {}
-  });
+		mocha: {
+			index: ['tests/index.html']
+		},
+		watch: {
+			files: '<config:lint.files>',
+			tasks: 'quality'
+		},
+        cssmin : {
+            app : {
+                src: grunt.file.expandFiles('src/css/**/*.css'),
+                dest : 'dist/css/combined-<%= project.version %>.min.css'
+            }
+        },
+        useref : {
+            html: 'dist/*.html',
+            temp: 'dist'
+        },
+		requirejs: {
+			compile: (function() {
+				var buildOpts = {
+					appDir: "src",
+					baseUrl: "js",
+					dir: "dist",
+					modules: [{
+						name: "main"
+					}]
+				};
 
-  // R.js support
-  grunt.loadNpmTasks('grunt-requirejs');
+				// Load config file
+				var configStr = grunt.file.read('src/js/config.js');
 
-  // Default task.
-  grunt.registerTask('default', 'lint qunit');
+                // Eval is evil!
+                eval(configStr);
+                var config = require;
+                var k;
+                for (k in buildOpts) {
+                    if (buildOpts.hasOwnProperty(k)) {
+                        config[k] = buildOpts[k];
+                    }
+                }
+                return config;
+			} ())
+		},
+        csslint: {
+            app : {
+                src : noVendorFiles(['src/css/**/*.css']),
+                rules : {
+                    "adjoining-classes": false,
+                    "box-model": false
+                }
+            }
+        },
+		jshint: {
+			options: {
+				curly: true,
+				eqeqeq: true,
+				immed: true,
+				latedef: true,
+				newcap: true,
+				noarg: true,
+				sub: true,
+				undef: true,
+				boss: true,
+				eqnull: true,
+				browser: true
+			},
+			globals: {
+				'define': true,
+				'require': true,
+				'requirejs': true,
+				/* For tests only! */
+				'describe': true,
+				'it': true,
+				'beforeEach': true
+			}
+		},
+		uglify: {}
+	});
+
+	// R.js support
+	grunt.loadNpmTasks('grunt-requirejs');
+	// Mocha + PhantomJS runner
+	grunt.loadNpmTasks('grunt-mocha');
+	// Minifiy and concat css & js
+	grunt.loadNpmTasks('grunt-useref');
+
+	// Default tasks
+	grunt.registerTask('quality', 'lint csslint mocha');
+	grunt.registerTask('deploy', 'requirejs cssmin useref');
+
+	// Build
+	grunt.registerTask('build', 'quality deploy');
 
 };
+
