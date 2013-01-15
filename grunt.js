@@ -26,6 +26,7 @@ module.exports = function(grunt) {
 			files: '<config:lint.files>',
 			tasks: 'quality'
 		},
+        /* Building */
         cssmin : {
             app : {
                 src: grunt.file.expandFiles('src/css/**/*.css'),
@@ -62,6 +63,15 @@ module.exports = function(grunt) {
                 return config;
 			} ())
 		},
+        min : {
+            dist : {
+                // TODO those paths are also defined in index.html. There should be only one definition.
+                src: ['<banner>', 'dist/js/config.js', 'dist/js/vendor/require-jquery-2.1.2.js', 'dist/js/main.js'],
+                dest: 'dist/js/combined-<%= project.version %>.min.js'
+            }
+        },
+		uglify: {},
+        /* Lint options */
         csslint: {
             app : {
                 src : noVendorFiles(['src/css/**/*.css']),
@@ -94,8 +104,7 @@ module.exports = function(grunt) {
 				'it': true,
 				'beforeEach': true
 			}
-		},
-		uglify: {}
+		}
 	});
 
 	// R.js support
@@ -107,10 +116,9 @@ module.exports = function(grunt) {
 
 	// Default tasks
 	grunt.registerTask('quality', 'lint csslint mocha');
-	grunt.registerTask('deploy', 'requirejs cssmin useref');
+	grunt.registerTask('build_nolint', 'requirejs min cssmin useref');
 
 	// Build
-	grunt.registerTask('build', 'quality deploy');
+	grunt.registerTask('build', 'quality build_nolint');
 
 };
-

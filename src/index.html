@@ -11,8 +11,8 @@
         <meta name="viewport" content="width=device-width">
 
 		<!-- build:css css/combined-<%= project.version %>.min.css-->
-        <link rel="stylesheet" href="css/bootstrap.css">
-        <link rel="stylesheet" href="css/font-awesome.css">
+        <link rel="stylesheet" href="css/vendor/bootstrap.css">
+        <link rel="stylesheet" href="css/vendor/font-awesome.css">
         <link rel="stylesheet" href="css/main.css">
         <!-- endbuild -->
 
@@ -95,8 +95,7 @@
             </footer>
         </div> <!-- /container -->
         
-        <!-- This is disabled. Requirejs compiler should be enough for now.
-        bu-ild:js js/combined-<%= project.version %>.min.js -->
+        <!-- build:js js/combined-<%= project.version %>.min.js -->
         <script src="js/config.js"></script>
         <script src="js/vendor/require-jquery-2.1.2.js"></script>
         <script src="js/main.js"></script>
