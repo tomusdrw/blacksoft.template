@@ -3,18 +3,18 @@ module.exports = function(grunt) {
     var noVendorFiles = function(files) {
         return grunt.file.expandFiles(files).filter(function(x) {
 			return x.indexOf('/vendor/') === - 1;
-	    });
+        });
     };
 
 	// Project configuration.
 	grunt.initConfig({
         project : "<json:project.json>",
 		meta: {
-			banner: '/*! <%=project.name %> - v<%= project.version %> - ' //
-                  + '<%= grunt.template.today("yyyy-mm-dd") %>\n' //
-                  + '* <%= project.website %>\n' //
-                  + '* Copyright (c) <%= grunt.template.today("yyyy") %> ' //
-                  + '<%= project.author %>; Licensed <%= project.license %> */'
+			banner: '/*! <%=project.name %> - v<%= project.version %> - ' +//
+                  '<%= grunt.template.today("yyyy-mm-dd") %>\n' +//
+                  '* <%= project.website %>\n' +//
+                  '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +//
+                  '<%= project.author %>; Licensed <%= project.license %> */'
 		},
 		lint: {
 			files: noVendorFiles(['grunt.js', 'src/**/*.js', 'tests/**/*.js'])		
@@ -52,7 +52,8 @@ module.exports = function(grunt) {
 				var configStr = grunt.file.read('src/js/config.js');
 
                 // Eval is evil!
-                eval(configStr);
+                var e = eval;
+                e(configStr);
                 var config = require;
                 var k;
                 for (k in buildOpts) {
@@ -83,7 +84,7 @@ module.exports = function(grunt) {
         },
         complexity : {
             generic: {
-                src: noVendorFiles([/*'grunt.js',*/ 'src/js/**/*.js']),
+                src: noVendorFiles(['grunt.js', 'src/js/**/*.js']),
                 options: {
                     cyclomatic: 3,
                     halstead: 8,
@@ -104,7 +105,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-complexity');
 
 	// Default tasks
-	grunt.registerTask('quality', 'lint csslint mocha');
+	grunt.registerTask('quality', 'lint csslint mocha complexity');
 	grunt.registerTask('build_nolint', 'requirejs min cssmin useref');
 
 	// Build
