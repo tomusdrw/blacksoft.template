@@ -2,7 +2,7 @@
 module.exports = function(grunt) {
     var noVendorFiles = function(files) {
         return grunt.file.expandFiles(files).filter(function(x) {
-			return x.indexOf('/vendor/') === - 1;
+			return x.indexOf('/vendor') === - 1;
         });
     };
 
