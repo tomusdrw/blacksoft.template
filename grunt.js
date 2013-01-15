@@ -39,6 +39,7 @@ module.exports = function(grunt) {
         },
 		requirejs: {
 			compile: (function() {
+                /*jshint evil:true*/
 				var buildOpts = {
 					appDir: "src",
 					baseUrl: "js",
@@ -50,10 +51,8 @@ module.exports = function(grunt) {
 
 				// Load config file
 				var configStr = grunt.file.read('src/js/config.js');
-
                 // Eval is evil!
-                var e = eval;
-                e(configStr);
+                eval(configStr);
                 var config = require;
                 var k;
                 for (k in buildOpts) {

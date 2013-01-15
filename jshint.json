@@ -10,7 +10,7 @@
        "undef": true, 
        "boss": true, 
        "eqnull": true, 
-       "browser": true 
+       "browser": true
     }, 
     "globals": { 
        "define": true, 

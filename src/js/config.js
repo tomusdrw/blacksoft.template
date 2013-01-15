@@ -1,4 +1,5 @@
 var require = {
+    baseUrl : 'js',
 	paths : {
 		'bootstrap' : 'vendor/bootstrap-2.2.2',
 		'underscore' : 'vendor/underscore-1.4.3',
